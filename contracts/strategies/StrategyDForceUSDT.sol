@@ -17,25 +17,20 @@ contract StrategyDForceUSDT {
     using Address for address;
     using SafeMath for uint256;
 
-    address public constant want = address(
-        0xdAC17F958D2ee523a2206206994597C13D831ec7
-    ); // usdt
-    address public constant d = address(
-        0x868277d475E0e475E38EC5CdA2d9C83B5E1D9fc8
-    ); //dUSDT
-    address public constant pool = address(
-        0x324EebDAa45829c6A8eE903aFBc7B61AF48538df
-    );
-    address public constant df = address(
-        0x431ad2ff6a9C365805eBaD47Ee021148d6f7DBe0
-    ); //df token
-    address public constant uni = address(
-        0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D
-    );
-    address public constant weth = address(
-        0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
-    ); // used for df <> weth <> usdt route
+    address public constant want =
+        address(0xdAC17F958D2ee523a2206206994597C13D831ec7); // usdt
+    address public constant d =
+        address(0x868277d475E0e475E38EC5CdA2d9C83B5E1D9fc8); //dUSDT
+    address public constant pool =
+        address(0x324EebDAa45829c6A8eE903aFBc7B61AF48538df); // stake dUSDT pool
+    address public constant df =
+        address(0x431ad2ff6a9C365805eBaD47Ee021148d6f7DBe0); //df token
+    address public constant uni =
+        address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
+    address public constant weth =
+        address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); // used for df <> weth <> usdt route
 
+    uint256 public strategistReward = 100;
     uint256 public performanceFee = 5000;
     uint256 public constant performanceMax = 10000;
 
@@ -59,6 +54,11 @@ contract StrategyDForceUSDT {
     function setStrategist(address _strategist) external {
         require(msg.sender == governance, "!governance");
         strategist = _strategist;
+    }
+
+    function setStrategistReward(uint256 _strategistReward) external {
+        require(msg.sender == governance, "!governance");
+        strategistReward = _strategistReward;
     }
 
     function setWithdrawalFee(uint256 _withdrawalFee) external {
@@ -160,8 +160,10 @@ contract StrategyDForceUSDT {
         }
         uint256 _want = IERC20(want).balanceOf(address(this));
         if (_want > 0) {
-            uint256 _fee = _want.mul(performanceFee).div(performanceMax);
-            IERC20(want).safeTransfer(IController(controller).rewards(), _fee);
+            uint256 _fee1 = _want.mul(strategistReward).div(performanceMax);
+            IERC20(want).safeTransfer(strategist, _fee1);
+            uint256 _fee2 = _want.mul(performanceFee).div(performanceMax);
+            IERC20(want).safeTransfer(IController(controller).rewards(), _fee2);
             deposit();
         }
     }
