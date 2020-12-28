@@ -209,6 +209,7 @@ contract StrategyDForceUSDT {
         governance = _governance;
     }
     /*
+    // may cause leak
     function setController(address _controller) external {
         require(msg.sender == governance, "!governance");
         controller = _controller;
