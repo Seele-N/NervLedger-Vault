@@ -216,26 +216,6 @@ contract StrategyUSDT3pool {
         return balanceOfWant().add(balanceOfy3CRVinWant());
     }
 
-    function migrate(address _strategy) external {
-        require(msg.sender == governance, "!governance");
-        require(
-            IController(controller).approvedStrategies(want, _strategy),
-            "!stategyAllowed"
-        );
-        IERC20(y3crv).safeTransfer(
-            _strategy,
-            IERC20(y3crv).balanceOf(address(this))
-        );
-        IERC20(_3crv).safeTransfer(
-            _strategy,
-            IERC20(_3crv).balanceOf(address(this))
-        );
-        IERC20(want).safeTransfer(
-            _strategy,
-            IERC20(want).balanceOf(address(this))
-        );
-    }
-
     function forceD(uint256 _amount) external isAuthorized {
         IERC20(want).safeApprove(_3pool, 0);
         IERC20(want).safeApprove(_3pool, _amount);
