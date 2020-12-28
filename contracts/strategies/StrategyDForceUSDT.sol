@@ -208,9 +208,10 @@ contract StrategyDForceUSDT {
         require(msg.sender == governance, "!governance");
         governance = _governance;
     }
-
+    /*
     function setController(address _controller) external {
         require(msg.sender == governance, "!governance");
         controller = _controller;
     }
+*/
 }

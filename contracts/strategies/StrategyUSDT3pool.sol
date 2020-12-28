@@ -38,18 +38,14 @@ contract StrategyUSDT3pool {
     using SafeMath for uint256;
 
     // usdt
-    address public constant want = address(
-        0xdAC17F958D2ee523a2206206994597C13D831ec7
-    );
-    address public constant _3pool = address(
-        0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7
-    );
-    address public constant _3crv = address(
-        0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490
-    );
-    address public constant y3crv = address(
-        0x9cA85572E6A3EbF24dEDd195623F188735A5179f
-    );
+    address public constant want =
+        address(0xdAC17F958D2ee523a2206206994597C13D831ec7);
+    address public constant _3pool =
+        address(0xbEbc44782C7dB0a1A60Cb6fe97d0b483032FF1C7);
+    address public constant _3crv =
+        address(0x6c3F90f043a72FA612cbac8115EE7e52BDe6E490);
+    address public constant y3crv =
+        address(0x9cA85572E6A3EbF24dEDd195623F188735A5179f);
 
     address public governance;
     address public controller;
@@ -93,9 +89,8 @@ contract StrategyUSDT3pool {
         if (_want > 0) {
             IERC20(want).safeApprove(_3pool, 0);
             IERC20(want).safeApprove(_3pool, _want);
-            uint256 v = _want.mul(1e30).div(
-                ICurveFi(_3pool).get_virtual_price()
-            );
+            uint256 v =
+                _want.mul(1e30).div(ICurveFi(_3pool).get_virtual_price());
             ICurveFi(_3pool).add_liquidity(
                 [0, 0, _want],
                 v.mul(DENOMINATOR.sub(slip)).div(DENOMINATOR)
@@ -142,12 +137,10 @@ contract StrategyUSDT3pool {
     }
 
     function _withdrawSome(uint256 _amount) internal returns (uint256) {
-        uint256 _amnt = _amount.mul(1e30).div(
-            ICurveFi(_3pool).get_virtual_price()
-        );
-        uint256 _amt = _amnt.mul(1e18).div(
-            yvERC20(y3crv).getPricePerFullShare()
-        );
+        uint256 _amnt =
+            _amount.mul(1e30).div(ICurveFi(_3pool).get_virtual_price());
+        uint256 _amt =
+            _amnt.mul(1e18).div(yvERC20(y3crv).getPricePerFullShare());
         uint256 _before = IERC20(_3crv).balanceOf(address(this));
         yvERC20(y3crv).withdraw(_amt);
         uint256 _after = IERC20(_3crv).balanceOf(address(this));
@@ -313,11 +306,12 @@ contract StrategyUSDT3pool {
         governance = _governance;
     }
 
+    /*
     function setIController(address _controller) external {
         require(msg.sender == governance, "!governance");
         controller = _controller;
     }
-
+*/
     function setStrategist(address _strategist) external {
         require(msg.sender == governance || msg.sender == strategist, "!gs");
         strategist = _strategist;
